@@ -1,15 +1,4 @@
 #include "pipex.h"
-void	free_array_of_strings(char **array)
-{
-	int	i;
-
-	i = 0;
-	while (array[i])
-		array[i++] = 0;
-	while (i >= 0)
-		free(array[i--]);
-	free(array);
-}
 void	ft_putstr_fd(char *s, int fd)
 {
 	size_t i;
@@ -22,11 +11,8 @@ void	ft_putstr_fd(char *s, int fd)
 			i++;
 		}
 }
-int *check_fd(char **argv, int argc)
+int check_fd(char **argv, int argc, int **fd)
 {
-	int *fd;
-
-	fd=malloc(sizeof(int)*2);
     fd[0]=open(argv[1],O_RDONLY);
     if(fd[0]==-1)
     {    
@@ -39,28 +25,26 @@ int *check_fd(char **argv, int argc)
         printf("error: infile\n");
         return(0);
     }
-    return(fd);
+    return(1);
 }
-t_command   **make_command(char **argv, int argc)
+char   **make_command(char **argv, int argc)
 {
     int i;
-    t_command **all;
+    char **all;
     int i1;
 
-    i1 = 0;
+    i = 0;
     i = 1;
-    all=(t_command**)malloc(sizeof(t_command *)*(argc-1));
+    all=(char**)malloc(sizeof(char *)*(argc-1));
     if(!all)
         return(0);
     while(argv[++i])
     {
-        all[i1]->all=ft_split(argv[i],' ');
-        all[i1]->all[0]=find_path(all[i1]->all[0]);
-		//printf("%s",all[i1]->all[0]);
-		printf("hello");
+        all[i1]=ft_split(argv[i],' ');
+        all[i1][0]=find_path(all[i1][0]);
         i1++;
     }
-    all[i1]->all[0]=0;
+    all[i1]=0;
     return(all);
 }
 char  *find_path(char *name)
@@ -74,19 +58,18 @@ char  *find_path(char *name)
 	PATH = ft_split(tmp,':');
 	while(PATH[++i])
 	{
-		tmp=ft_strjoin("/",name);
-		tmp = ft_strjoin(PATH[i],tmp);
+		
+		tmp = ft_strjoin(PATH[i],name);
 		if(!stat(tmp,&buff))
 		{
-			printf("hello");
-			//free_array_of_strings(PATH);
+			free_array_of_strings(PATH);
 			return(tmp);
 		}
 		printf("%s\n",tmp);
 		free(tmp);
 	}
-	//free_array_of_strings(PATH);
-	return(name);
+	free_array_of_strings(PATH);
+	return(0);
 }
 int	**make_pipe(int	size)
 {
@@ -110,7 +93,7 @@ int	**make_pipe(int	size)
 	return (pipe);
 }
 
-void print_errors(pid_t *pid,t_command  **all,int size)
+void print_errors(pid_t *pid,char  **all,int size)
 {
 	int fd1;
     int i;
@@ -122,7 +105,7 @@ void print_errors(pid_t *pid,t_command  **all,int size)
 		if(fd1==256)
 		{
 			ft_putstr_fd("zsh: command not found:",0);
-			ft_putstr_fd(all[i]->all[0],0);
+			ft_putstr_fd(all[i],0);
 			ft_putstr_fd("\n",0);
 		}
 		size--;
@@ -131,7 +114,7 @@ void print_errors(pid_t *pid,t_command  **all,int size)
 
 }
 
-pid_t test(t_command *all,int *pipe_1,int *pipe_2,int fd1,int fd2, char **env)
+pid_t test(char **all,int *pipe_1,int *pipe_2,int fd1,int fd2, char **env)
 {
 	struct stat buff;
 	if(pipe_2!=0)
@@ -161,9 +144,9 @@ pid_t test(t_command *all,int *pipe_1,int *pipe_2,int fd1,int fd2, char **env)
 			dup2(fd2,0);
 			close(fd2);
 		}
-		if(stat(all->all[0],&buff))
+		if(stat(all[0],&buff))
 			exit(1);		
-		if(execve(all->all[0],all->all,env))
+		if(execve(all[0],all,env))
 			exit(0);
 	}
 	if(pipe_1!=0)
@@ -173,9 +156,9 @@ pid_t test(t_command *all,int *pipe_1,int *pipe_2,int fd1,int fd2, char **env)
 	}
 	return(pid);
 }
-void redirect(int *fd, t_command **all, char **env, int size)
+void redirect(int *fd, char **all, char **env, int size)
 {
-    int **pipe;
+    int **pape;
 	int i;
 	pid_t *pid;
 	
@@ -207,23 +190,22 @@ void redirect(int *fd, t_command **all, char **env, int size)
 
 void pipex(char **argv, int argc, char **env)
 {
-    int *fd;
-	t_command **all;
+    int fd[2];
+    char **all;
     int i;
 
     i=-1;
-    //fd=check_fd(argv, argc);
-	if(!fd)
-		return ;
-	all = make_command(argv, argc);
-    //redirect(fd,all,env, argc-2);
+    if(check_fd(argv, argc, &fd))
+        return ;
+    all = make_command(argv, argc);
+    redirect(fd,all,env, argc-2);
     close(fd[0]);
     close(fd[1]);
     free(fd);
-   // while (all->all[++i])
-     //   free(all[i]);
-    //free(all[i]);
-    //free(all);
+    while (all[++i])
+        free(all[i]);
+    free(all[i]);
+    free(all);
 }
 
 int main(int argc,char **argv, char **env)
