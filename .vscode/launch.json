@@ -5,17 +5,12 @@
 	"version": "0.2.0",
 	"configurations": [
 		{
-			"name": "gcc - Сборка и отладка активного файла",
-			"type": "cppdbg",
+			"type": "lldb",
 			"request": "launch",
-			"program": "${fileDirname}/a.out",
-			"args": [],
-			"stopAtEntry": false,
-			"cwd": "${fileDirname}",
-			"environment": [],
-			"externalConsole": false,
-			"MIMode": "lldb",
-			"preLaunchTask": "C/C++: gcc сборка активного файла"
+			"name": "Debug",
+			"program": "${workspaceFolder}/a.out",
+			"args": ["outfile","grep lol","wc","infile"],
+			"cwd": "${workspaceFolder}"
 		}
 	]
 }

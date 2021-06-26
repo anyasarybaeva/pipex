@@ -27,7 +27,7 @@ int *check_fd(char **argv, int argc)
 	int *fd;
 
 	fd=malloc(sizeof(int)*2);
-    fd[0]=open(argv[1],O_RDONLY);
+    fd[0]=open(argv[1],O_WRONLY);
     if(fd[0]==-1)
     {    
         printf("error: outfile\n");
@@ -49,18 +49,17 @@ t_command   **make_command(char **argv, int argc)
 
     i1 = 0;
     i = 1;
-    all=(t_command**)malloc(sizeof(t_command *)*(argc-1));
+    all=(t_command**)malloc(sizeof(t_command *)*(argc-3));
     if(!all)
         return(0);
-    while(argv[++i])
+    while(++i<argc-1)
     {
+		all[i1]=malloc(sizeof(t_command)*(1));
         all[i1]->all=ft_split(argv[i],' ');
         all[i1]->all[0]=find_path(all[i1]->all[0]);
-		//printf("%s",all[i1]->all[0]);
-		printf("hello");
+		printf("com:%s\n",all[i1]->all[0]);
         i1++;
     }
-    all[i1]->all[0]=0;
     return(all);
 }
 char  *find_path(char *name)
@@ -78,11 +77,9 @@ char  *find_path(char *name)
 		tmp = ft_strjoin(PATH[i],tmp);
 		if(!stat(tmp,&buff))
 		{
-			printf("hello");
 			//free_array_of_strings(PATH);
 			return(tmp);
 		}
-		printf("%s\n",tmp);
 		free(tmp);
 	}
 	//free_array_of_strings(PATH);
@@ -139,12 +136,13 @@ pid_t test(t_command *all,int *pipe_1,int *pipe_2,int fd1,int fd2, char **env)
 	pid_t pid=fork();
 	if(!pid)
 	{
-		if(pipe_1!=0 )
+		if(pipe_1!=0)
 		{
 			dup2(pipe_1[1],1);
 			close(pipe_1[1]);
 			close(pipe_1[0]);//add function close_fd -5 lines
 		}
+		
 		if(pipe_2!=0)
 		{
 			dup2(pipe_2[0],0);
@@ -178,31 +176,35 @@ void redirect(int *fd, t_command **all, char **env, int size)
     int **pipe;
 	int i;
 	pid_t *pid;
+	int num;
+	num=size-4;
 	
     i = 0;
-    pipe = make_pipe(size);
-	pid=malloc(sizeof(pid)*(size+1));
+    pipe = make_pipe(size-4);
+	pid=malloc(sizeof(pid)*(size-3));
 	if(!pid)
 		return;
-    pid[size--]=test(all[i],pipe[i],pipe[i+1],fd[0],0,env);
-	while(0<=size)
+    pid[i]=test(all[num--],pipe[i],pipe[i+1],fd[1],0,env);
+	i++;
+	while(0<num)
 	{
-        i++;
-        if(0==size)
-            pid[size]=test(all[i],pipe[i],pipe[i+1],0,fd[1],env);
-        else
-           pid[size]=test(all[i],pipe[i],pipe[i+1],0,0,env); 
-           size--;
+        pid[i]=test(all[num--],pipe[i],pipe[i+1],0,0,env);
+		i++;
 	}
-	print_errors(pid,all,size);
-	i=size;
-	i = 0;
-	free(pipe[i++]);
-	while(pipe[i])
-		free(pipe[i++]);
-	free(pipe[i]);
-	free(pipe);
-	free(pid);
+	pid[i]=test(all[num],pipe[i],pipe[i+1],0,fd[0],env);
+	printf("hello\n");
+	waitpid(pid[0],&num,0);
+	printf("hello1\n");
+	waitpid(pid[1],&num,0);
+	//print_errors(pid,all,size);
+	//i=size;
+	//i = 0;
+	//free(pipe[i++]);
+	//while(pipe[i])
+	//	free(pipe[i++]);
+	//free(pipe[i]);
+	///free(pipe);
+	//free(pid);
 }
 
 void pipex(char **argv, int argc, char **env)
@@ -212,14 +214,14 @@ void pipex(char **argv, int argc, char **env)
     int i;
 
     i=-1;
-    //fd=check_fd(argv, argc);
+    fd=check_fd(argv, argc);
 	if(!fd)
 		return ;
 	all = make_command(argv, argc);
-    //redirect(fd,all,env, argc-2);
-    close(fd[0]);
-    close(fd[1]);
-    free(fd);
+	redirect(fd,all,env, argc);
+    //close(fd[0]);
+    //close(fd[1]);
+   // free(fd);
    // while (all->all[++i])
      //   free(all[i]);
     //free(all[i]);
