@@ -1,4 +1,4 @@
-#include "pipex.h"
+#include "../pipex.h"
 
 int	**make_pipe(int	size)
 {
@@ -88,7 +88,7 @@ void pipex(char **argv, int argc, char **env)
 
 int main(int argc,char **argv, char **env)
 {
-    if(argc==5)
+    if(argc>=5)
         pipex(argv, argc,env);
     else
         printf("not enoght arg\n");	

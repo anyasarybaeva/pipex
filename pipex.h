@@ -19,17 +19,22 @@
 # include <string.h>
 # include <errno.h>
 #include "libft/libft.h"
+#include "get_next_line/get_next_line.h"
+#include <stdio.h>
+extern int errno;
+
 typedef struct s_command
 {
 	char **all;
 }			t_command;
 int *check_fd(char **argv, int argc);
-t_command   **make_command(char **argv, int argc);
+t_command   **make_command(int *fd,char **argv, int argc);
 char  *find_path(char *name);
 void pipex(char **argv, int argc,char **env);
 void redirect(int *fd, t_command **all, char **env, int size);
-pid_t test(t_command *all,int *pipe_1,int *pipe_2,int fd1,int fd2, char **env);
+pid_t test(char **all,int *pipe_1,int *pipe_2,int fd1, char **env);
 void print_errors(pid_t *pid,t_command  **all,int size);
 int	**make_pipe(int	size);
 char	**ft_split(char const *s, char c);
+void	free_array_of_strings(char **array);
 #endif

@@ -9,7 +9,7 @@
 			"request": "launch",
 			"name": "Debug",
 			"program": "${workspaceFolder}/a.out",
-			"args": ["outfile","grep lol","wc","infile"],
+			"args": ["outfile","grep gg","gg","infile"],
 			"cwd": "${workspaceFolder}"
 		}
 	]
