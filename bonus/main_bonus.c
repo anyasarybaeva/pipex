@@ -1,4 +1,4 @@
-#include "pipex.h"
+#include "../pipex.h"
 
 int	**make_pipe(int	size)
 {

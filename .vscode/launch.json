@@ -8,8 +8,8 @@
 			"type": "lldb",
 			"request": "launch",
 			"name": "Debug",
-			"program": "${workspaceFolder}/a.out",
-			"args": ["outfile","grep gg","gg","infile"],
+			"program": "${workspaceFolder}/pipex",
+			"args": ["libft","grep gg","wc","infile"],
 			"cwd": "${workspaceFolder}"
 		}
 	]

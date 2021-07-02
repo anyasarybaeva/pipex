@@ -1,4 +1,4 @@
-#include "pipex.h"
+#include "../pipex.h"
 
 char	*ft_getenv(char	*key, char	**env)
 {

@@ -1,4 +1,4 @@
-#include "pipex.h"
+#include "../pipex.h"
 
 void	free_pipe(int **pipe, pid_t	*pid)
 {

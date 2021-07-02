@@ -1,4 +1,4 @@
-#include "pipex.h"
+#include "../pipex.h"
 
 int	**make_pipe(int	size)
 {
@@ -54,7 +54,7 @@ int	main(int	argc, char	**argv, char	**env)
 {
 	extern int	errno;
 
-	if (argc >= 5)
+	if (argc == 5)
 		pipex(argv, argc, env);
 	else
 		ft_putendl_fd("not enoght arg", 0);
