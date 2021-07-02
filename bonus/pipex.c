@@ -15,7 +15,7 @@ int	*check_fd(char **argv, int argc)
 	}
 	else
 		fd[0] = 2;
-	fd[1] = open (argv[argc - 1], O_WRONLY | O_CREAT, 0777 | O_TRUNC);
+	fd[1] = open (argv[argc - 1], O_WRONLY | O_CREAT | O_TRUNC);
 	if (fd[1] == -1)
 	{
 		ft_putstr_fd("bash: ", 0);
