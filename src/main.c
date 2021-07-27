@@ -34,9 +34,10 @@ void	pipex(char	**argv, int	argc, \
 	fd = check_fd(argv, argc);
 	if (!fd)
 		return ;
-	all = make_command(fd, argv, argc, env);
+	all = make_command(argv, argc, env);
 	redirect(fd, all, argc);
 	close(fd[1]);
+	close(fd[0]);
 	free(fd);
 	while (all[++i1])
 	{
@@ -57,5 +58,5 @@ int	main(int	argc, char	**argv, char	**env)
 	if (argc == 5)
 		pipex(argv, argc, env);
 	else
-		ft_putendl_fd("not enoght arg", 0);
+		ft_putendl_fd("Wrong number of arguments", 0);
 }

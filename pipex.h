@@ -17,7 +17,7 @@ typedef struct s_command
 	char	**env;
 }		t_command;
 int			*check_fd(char	**argv, int	argc);
-t_command	**make_command(int	*fd, char	**argv, int	argc, char	**env);
+t_command	**make_command(char	**argv, int	argc, char	**env);
 char		*find_path(char	*name, char	**env);
 void		pipex(char **argv, int argc, char **env);
 void		redirect(int	*fd, t_command	**all, int	size);
@@ -26,5 +26,5 @@ void		print_errors(pid_t	*pid, t_command	**all, int	size);
 int			**make_pipe(int	size);
 char		**ft_split(char const	*s, char	c);
 void		free_array_of_strings(char	**array);
-
+void		free_pipe(int **pipe, pid_t	*pid);
 #endif

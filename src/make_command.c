@@ -55,7 +55,7 @@ t_command	*ft_cat(char *argv, char **env)
 	return (all);
 }
 
-t_command	**make_command(int	*fd, char	**argv, int	argc, char	**env)
+t_command	**make_command(char	**argv, int	argc, char	**env)
 {
 	int			i;
 	t_command	**all;
@@ -63,13 +63,9 @@ t_command	**make_command(int	*fd, char	**argv, int	argc, char	**env)
 
 	i1 = 0;
 	i = 1;
-	all = (t_command **)malloc(sizeof(t_command *) * (argc - 3 + fd[0]));
+	all = (t_command **)malloc(sizeof(t_command *) * (argc - 2));
 	if (!all)
 		return (0);
-	if (fd[0])
-		all[i1++] = ft_cat(argv[1], env);
-	else
-		i = 2;
 	while (++i < argc - 1)
 	{
 		all[i1] = malloc(sizeof(t_command) * (1));
