@@ -37,15 +37,17 @@ bonus:		$(OBJS_BONUS)
 
 clean:
 		rm -f $(OBJS)
-
+		@make clean -C libft	
 bonus_clean:
 		rm -f $(OBJS_BONUS)
-
+		@make clean -C libft	
 fclean:	
-			rm -f $(OBJS) $(NAME)
-
+		rm -f $(OBJS) $(NAME)
+		@make fclean -C libft	
 fclean_bonus:
-			rm -f $(OBJS_BONUS) $(NAME_BONUS)
+		rm -f $(OBJS_BONUS) $(NAME_BONUS)
+		@make fclean -C libft	
+
 
 re:			fclean all
 
